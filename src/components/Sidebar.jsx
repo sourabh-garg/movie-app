@@ -1,21 +1,22 @@
 import {useState} from "react";
+import {isMobile} from 'react-device-detect';
 
 const SidebarData = {
     0: [
-        {title: "Discover", icon: "", active: true},
-        {title: "Playlist", icon: "", active: false},
-        {title: "Movie", icon: "", active: false},
-        {title: "TV Shows", icon: "", active: false},
-        {title: "My List", icon: "", active: false}
+        {title: "Discover", icon: "/search-blue.svg", active: true},
+        {title: "Playlist", icon: "/Vector.svg", active: false},
+        {title: "Movie", icon: "/movies.svg", active: false},
+        {title: "TV Shows", icon: "/shows.svg", active: false},
+        {title: "My List", icon: "/my-list.svg", active: false}
     ],
     1: [
-        {title: "Watch Later", icon: "", active: false},
-        {title: "Recommended", icon: "", active: false},
+        {title: "Watch Later", icon: "/watch.svg", active: false},
+        {title: "Recommended", icon: "/heart.svg", active: false},
 
     ],
     2: [
-        {title: "Settings", icon: "", active: false},
-        {title: "Logout", icon: "", active: false},
+        {title: "Settings", icon: "/setting.svg", active: false},
+        {title: "Logout", icon: "/logout.svg", active: false},
     ]
 };
 
@@ -25,15 +26,17 @@ const UserData = {
 }
 
 
-export default function Index() {
+export default function Index({active,updateSidebarState}) {
     let [data] = useState(SidebarData);
-
 
     let sideLinks = [];
     for(let key in data){
         let currentList = data[key].map((item) => {
-            const {title, active} = item;
-           return (<a className={`${active? "active": "" } sidebar-link`} key={title}> <p>{title}</p> </a>)
+            const {title, active,icon} = item;
+           return (<a className={`${active? "active": "" } sidebar-link`} key={title}>
+                     <img src={icon} alt={title}/>
+                     <p>{title}</p>
+                    </a>)
         });
         let list = <div className="link-section">{currentList}</div>;
         sideLinks.push(list);
@@ -42,8 +45,9 @@ export default function Index() {
 
 
     return (
-        <div className="sidebar">
+        <div className={`${active ? "sidebar-active": ""} sidebar`}>
 
+            <div className="sidebar-inner">
             <div className="user-data">
                 <div className="profile-pic">
                     <img src={UserData.photo} alt={UserData.name}/>
@@ -54,6 +58,8 @@ export default function Index() {
             <div>
                 {sideLinks}
             </div>
+            </div>
+            {isMobile && <div className="sidebar-overlay" onClick={() => {updateSidebarState(false)}}/> }
         </div>
     );
 }
